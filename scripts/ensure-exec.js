@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
  * Ensure executable bits are set on shell scripts for CI environments that strip file modes.
+ * Converted to CommonJS to avoid ESM runtime errors during npm prepare.
  */
-import { chmodSync, existsSync } from 'fs';
+const { chmodSync, existsSync } = require('fs');
 
 const files = [
   './gradlew',

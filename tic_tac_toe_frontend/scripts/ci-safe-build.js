@@ -3,11 +3,11 @@
  * CI-safe build script for Expo managed projects.
  * - If android/gradlew exists, assume prebuild ran and invoke Gradle assembleDebug.
  * - If not, print an info message and exit 0 to avoid failing CI that expects a "build" script.
+ * Converted to CommonJS to avoid ESM runtime errors in Node 18 without type: module.
  */
-import { existsSync } from 'fs';
-import { spawnSync } from 'child_process';
-import path from 'path';
-import process from 'process';
+const { existsSync } = require('fs');
+const { spawnSync } = require('child_process');
+const path = require('path');
 
 const androidGradle = path.join(process.cwd(), 'android', 'gradlew');
 
