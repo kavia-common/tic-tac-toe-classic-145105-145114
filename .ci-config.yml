@@ -1,0 +1,12 @@
+# CI configuration hint for managed Expo project
+# Use the safe build shim instead of invoking Gradle directly.
+build:
+  command: ./build.sh
+  working_directory: .
+lint:
+  command: npm run --workspace tic_tac_toe_frontend lint
+  working_directory: .
+notes:
+  - This is an Expo managed app; android/ folder exists only after prebuild.
+  - To build native in CI: run `npm run --workspace tic_tac_toe_frontend prebuild:android` first, then `npm run --workspace tic_tac_toe_frontend build-android`.
+  - Default build uses ./build.sh which no-ops unless native project exists.

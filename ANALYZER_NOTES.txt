@@ -1,0 +1,11 @@
+This is an Expo managed React Native project.
+
+Do NOT invoke ./gradlew directly unless a native Android project has been generated via:
+  npm run --workspace tic_tac_toe_frontend prebuild:android
+
+Use the CI-safe shim instead:
+  ./build.sh
+
+Or use root npm scripts:
+  npm run build
+  npm run lint

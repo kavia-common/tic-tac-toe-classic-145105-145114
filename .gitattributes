@@ -1,0 +1,4 @@
+*.sh text eol=lf
+gradlew text eol=lf
+gradlew.kts text eol=lf
+tic_tac_toe_frontend/scripts/** text eol=lf

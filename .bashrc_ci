@@ -1,0 +1,2 @@
+# Ensure repo root is on PATH for CI to find shims like ./gradlew or build.sh
+export PATH="$PWD:$PATH"

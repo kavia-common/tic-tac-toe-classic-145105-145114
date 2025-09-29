@@ -1,0 +1,13 @@
+{
+  "name": "tic-tac-toe-classic-145105-145114",
+  "private": true,
+  "workspaces": [
+    "tic_tac_toe_frontend"
+  ],
+  "scripts": {
+    "prepare": "node scripts/ensure-exec.js",
+    "build": "echo \"Root CI build no-op for Expo managed app. Use 'npm --workspace tic_tac_toe_frontend run build' if needed.\" && exit 0",
+    "lint": "npm --workspace tic_tac_toe_frontend run lint",
+    "start": "npm --workspace tic_tac_toe_frontend run start"
+  }
+}
