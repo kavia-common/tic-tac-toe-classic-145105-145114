@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useTheme } from '../theme/ThemeContext';
+import { useTheme, useThemeController } from '../theme/ThemeContext';
 import Toggle from '../components/Toggle';
 import Button from '../components/Button';
 import { useSettings } from '../hooks/useSettings';
@@ -10,8 +10,9 @@ import { Animate } from '../utils/animations';
 
 // PUBLIC_INTERFACE
 const SettingsScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
-  /** Settings screen to configure opponent type and AI difficulty. */
+  /** Settings screen to configure opponent type, AI difficulty, and theme. */
   const t = useTheme();
+  const { changeTheme } = useThemeController();
   const { settings, setSettings, ready } = useSettings();
 
   const fade = React.useMemo(() => Animate.fadeIn(t.motion.normal, 0), [t.motion.normal]);
@@ -32,6 +33,11 @@ const SettingsScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
     );
   }
 
+  const onSelectTheme = (key: 'ocean' | 'royalDark') => {
+    setSettings({ theme: key });
+    changeTheme(key);
+  };
+
   return (
     <Animated.View style={[styles.container, { backgroundColor: t.colors.background }, fade.style]}>
       <LinearGradient
@@ -48,12 +54,18 @@ const SettingsScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
       <View style={[styles.card, { backgroundColor: t.colors.surface, borderRadius: t.radius.lg }, t.shadow.md]}>
         <View style={styles.row}>
           <Text style={[styles.label, { color: t.colors.text }]}>Play vs AI</Text>
-          <Toggle value={settings.vsAI} onChange={(v) => setSettings({ vsAI: v })} />
+          <Toggle
+            value={settings.vsAI}
+            onChange={(v) => setSettings({ vsAI: v })}
+          />
         </View>
 
         <View style={styles.row}>
           <Text style={[styles.label, { color: t.colors.text }]}>Player Starts (X)</Text>
-          <Toggle value={settings.playerStarts} onChange={(v) => setSettings({ playerStarts: v })} />
+          <Toggle
+            value={settings.playerStarts}
+            onChange={(v) => setSettings({ playerStarts: v })}
+          />
         </View>
 
         <View style={styles.group}>
@@ -76,12 +88,59 @@ const SettingsScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
             />
           </View>
         </View>
+
+        <View style={styles.group}>
+          <Text style={[styles.groupLabel, { color: t.colors.mutedText }]}>Theme</Text>
+          <View style={styles.segmentRow} accessible accessibilityRole="radiogroup" accessibilityLabel="Theme selection">
+            <Segment
+              label="Ocean"
+              selected={settings.theme === 'ocean'}
+              onPress={() => onSelectTheme('ocean')}
+              a11yLabel="Select Ocean theme"
+            />
+            <Segment
+              label="Royal Dark"
+              selected={settings.theme === 'royalDark'}
+              onPress={() => onSelectTheme('royalDark')}
+              a11yLabel="Select Royal Dark theme"
+            />
+          </View>
+        </View>
       </View>
 
       <View style={styles.footer}>
         <Button title="Back" variant="secondary" onPress={() => navigation.goBack?.()} />
       </View>
     </Animated.View>
+  );
+};
+
+const Segment: React.FC<{ label: string; selected: boolean; onPress: () => void; a11yLabel: string }> = ({
+  label,
+  selected,
+  onPress,
+  a11yLabel,
+}) => {
+  const t = useTheme();
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="radio"
+      accessibilityLabel={a11yLabel}
+      accessibilityState={{ selected }}
+      style={[
+        {
+          paddingVertical: 8,
+          paddingHorizontal: 12,
+          borderRadius: t.radius.md,
+          borderWidth: 1,
+          borderColor: selected ? t.colors.primary : t.colors.border,
+          backgroundColor: selected ? t.colors.primary : 'transparent',
+        },
+      ]}
+    >
+      <Text style={{ color: selected ? '#ffffff' : t.colors.text, fontWeight: '800' }}>{label}</Text>
+    </Pressable>
   );
 };
 
@@ -95,6 +154,7 @@ const styles = StyleSheet.create({
   group: { marginTop: 8 },
   groupLabel: { fontSize: 12, fontWeight: '700', marginBottom: 8 },
   diffRow: { flexDirection: 'row', gap: 10, justifyContent: 'space-between' },
+  segmentRow: { flexDirection: 'row', gap: 8, justifyContent: 'flex-start' },
   footer: { marginTop: 24, alignItems: 'center' },
 });
 

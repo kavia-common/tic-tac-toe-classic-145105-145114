@@ -26,7 +26,7 @@ const HomeScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
         <Text style={[styles.title, { color: t.colors.text }]} accessibilityRole="header">
           Tic Tac Toe
         </Text>
-        <Text style={[styles.subtitle, { color: t.colors.mutedText }]}>Ocean Professional</Text>
+        <Text style={[styles.subtitle, { color: t.colors.mutedText }]}>{t.name}</Text>
       </LinearGradient>
 
       <View style={styles.actions}>

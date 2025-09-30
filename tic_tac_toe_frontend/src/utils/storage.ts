@@ -5,11 +5,13 @@ const KEYS = {
   SCORE: '@ttt:score',
 };
 
+export type ThemeKey = 'ocean' | 'royalDark';
+
 export type SettingsState = {
   vsAI: boolean;
   aiLevel: 'easy' | 'medium' | 'hard';
   playerStarts: boolean; // X if true
-  theme: 'ocean';
+  theme: ThemeKey;
 };
 
 export type ScoreState = {
