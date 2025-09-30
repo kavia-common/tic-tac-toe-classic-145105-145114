@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { Pressable, Text, ViewStyle, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 
@@ -12,23 +12,31 @@ type Props = {
 };
 
 // PUBLIC_INTERFACE
-const Button: React.FC<Props> = ({ title, onPress, variant = 'primary', style, disabled, accessibilityLabel }) => {
+const Button: React.FC<Props> = memo(function Button({
+  title,
+  onPress,
+  variant = 'primary',
+  style,
+  disabled,
+  accessibilityLabel,
+}) {
   /** Themed button supporting primary, secondary, and ghost variants. */
   const t = useTheme();
-  const base = [styles.base, t.shadow.sm, { borderRadius: t.radius.lg }];
-  let variantStyle: ViewStyle = {};
-  if (variant === 'primary') {
-    variantStyle = { backgroundColor: t.colors.primary };
-  } else if (variant === 'secondary') {
-    variantStyle = { backgroundColor: t.colors.secondary };
-  } else {
-    variantStyle = { backgroundColor: 'transparent', borderWidth: 1, borderColor: t.colors.border };
-  }
+  const base = useMemo(() => [styles.base, t.shadow.sm, { borderRadius: t.radius.lg }], [t.radius.lg, t.shadow.sm]);
+
+  const variantStyle: ViewStyle = useMemo(() => {
+    if (variant === 'primary') return { backgroundColor: t.colors.primary };
+    if (variant === 'secondary') return { backgroundColor: t.colors.secondary };
+    return { backgroundColor: 'transparent', borderWidth: 1, borderColor: t.colors.border };
+  }, [t.colors.border, t.colors.primary, t.colors.secondary, variant]);
+
+  const textColor = useMemo(() => (variant === 'ghost' ? t.colors.text : '#ffffff'), [t.colors.text, variant]);
 
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel || title}
+      hitSlop={8}
       style={({ pressed }) => [
         ...base,
         variantStyle,
@@ -38,10 +46,10 @@ const Button: React.FC<Props> = ({ title, onPress, variant = 'primary', style, d
       ]}
       onPress={disabled ? undefined : onPress}
     >
-      <Text style={[styles.text, { color: variant === 'ghost' ? t.colors.text : '#ffffff' }]}>{title}</Text>
+      <Text style={[styles.text, { color: textColor }]}>{title}</Text>
     </Pressable>
   );
-};
+});
 
 const styles = StyleSheet.create({
   base: {

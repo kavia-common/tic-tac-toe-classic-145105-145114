@@ -1,6 +1,6 @@
 /**
  * Lightweight Nav type placeholder for internal router usage.
- * Not using react-navigation; keep this file as a compatibility shim if imported.
+ * Kept for potential compatibility; main types live in theme/routerTypes.
  */
 export type Nav = {
   navigate: (route: 'Home' | 'Game' | 'Settings') => void;

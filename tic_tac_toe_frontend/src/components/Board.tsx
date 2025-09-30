@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import Cell from './Cell';
@@ -12,9 +12,15 @@ type Props = {
 };
 
 // PUBLIC_INTERFACE
-const Board: React.FC<Props> = ({ board, onCellPress, winningLine, disabled }) => {
+const Board: React.FC<Props> = memo(function Board({ board, onCellPress, winningLine, disabled }) {
   /** 3x3 game board with winning line highlight and press handling. */
   const t = useTheme();
+
+  const handlePress = useCallback(
+    (idx: number) => () => onCellPress(idx),
+    [onCellPress]
+  );
+
   return (
     <View style={[styles.wrap, { backgroundColor: t.colors.surface, borderRadius: t.radius.lg }, t.shadow.md]}>
       <View style={styles.grid}>
@@ -23,7 +29,7 @@ const Board: React.FC<Props> = ({ board, onCellPress, winningLine, disabled }) =
             key={i}
             index={i}
             value={v}
-            onPress={() => onCellPress(i)}
+            onPress={handlePress(i)}
             highlight={!!winningLine?.includes(i)}
             disabled={disabled}
           />
@@ -31,7 +37,7 @@ const Board: React.FC<Props> = ({ board, onCellPress, winningLine, disabled }) =
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   wrap: {

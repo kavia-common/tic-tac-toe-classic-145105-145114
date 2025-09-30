@@ -4,7 +4,32 @@ import pluginReact from "eslint-plugin-react";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
-  { files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"], languageOptions: { globals: globals.browser } },
-  tseslint.configs.recommended,
+  {
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    languageOptions: {
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
+  },
+  // Typescript recommended rules
+  ...tseslint.configs.recommended,
+  // React recommended rules
   pluginReact.configs.flat.recommended,
+  // Project-specific overrides
+  {
+    files: ["**/*.{ts,tsx}"],
+    rules: {
+      // Using TypeScript for type checking, no PropTypes needed.
+      "react/prop-types": "off",
+    },
+  },
 ]);

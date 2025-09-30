@@ -1,16 +1,22 @@
 import { Colors, Gradients } from './colors';
 
 export type AppTheme = {
+  /** Theme display name. */
   name: string;
+  /** Color palette. */
   colors: typeof Colors;
+  /** Linear gradients. */
   gradients: typeof Gradients;
+  /** Border radius scale. */
   radius: {
     sm: number;
     md: number;
     lg: number;
     xl: number;
   };
+  /** Spacing utility, multiples of 8. */
   spacing: (factor?: number) => number;
+  /** Cross-platform shadow presets. */
   shadow: {
     sm: Record<string, unknown>;
     md: Record<string, unknown>;

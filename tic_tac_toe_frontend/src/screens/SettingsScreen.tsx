@@ -5,9 +5,7 @@ import { useTheme } from '../theme/ThemeContext';
 import Toggle from '../components/Toggle';
 import Button from '../components/Button';
 import { useSettings } from '../hooks/useSettings';
-
-type RouteName = 'Home' | 'Game' | 'Settings';
-type NavLike = { navigate: (route: RouteName) => void; goBack?: () => void };
+import { NavLike } from '../theme/routerTypes';
 
 // PUBLIC_INTERFACE
 const SettingsScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
@@ -17,7 +15,12 @@ const SettingsScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
 
   if (!ready) {
     return (
-      <View style={[styles.container, { backgroundColor: t.colors.background, alignItems: 'center', justifyContent: 'center' }]}>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: t.colors.background, alignItems: 'center', justifyContent: 'center' },
+        ]}
+      >
         <Text style={{ color: t.colors.mutedText }}>Loading...</Text>
       </View>
     );
@@ -68,7 +71,7 @@ const SettingsScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
       </View>
 
       <View style={styles.footer}>
-        <Button title="Back" variant="secondary" onPress={() => navigation.goBack()} />
+        <Button title="Back" variant="secondary" onPress={() => navigation.goBack?.()} />
       </View>
     </View>
   );

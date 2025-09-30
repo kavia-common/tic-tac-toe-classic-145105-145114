@@ -1,10 +1,9 @@
 import React from 'react';
-
-type Route = 'Home' | 'Game' | 'Settings';
+import { RouteName } from './routerTypes';
 
 type RouterCtx = {
-  route: Route;
-  navigate: (to: Route) => void;
+  route: RouteName;
+  navigate: (to: RouteName) => void;
   goBack: () => void;
 };
 
@@ -21,11 +20,16 @@ export function useRouter() {
 // PUBLIC_INTERFACE
 export const InternalRouter: React.FC<React.PropsWithChildren> = ({ children }) => {
   /** Simple in-memory router supporting navigate and goBack for 3 routes. */
-  const [stack, setStack] = React.useState<Route[]>(['Home']);
+  const [stack, setStack] = React.useState<RouteName[]>(['Home']);
   const route = stack[stack.length - 1];
 
-  const navigate = (to: Route) => setStack(prev => [...prev, to]);
-  const goBack = () => setStack(prev => (prev.length > 1 ? prev.slice(0, -1) : prev));
+  const navigate = React.useCallback((to: RouteName) => {
+    setStack(prev => [...prev, to]);
+  }, []);
+
+  const goBack = React.useCallback(() => {
+    setStack(prev => (prev.length > 1 ? prev.slice(0, -1) : prev));
+  }, []);
 
   return <Ctx.Provider value={{ route, navigate, goBack }}>{children}</Ctx.Provider>;
 };

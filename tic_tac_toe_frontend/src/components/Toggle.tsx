@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import { Pressable, View, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 
@@ -10,14 +10,20 @@ type Props = {
 };
 
 // PUBLIC_INTERFACE
-const Toggle: React.FC<Props> = ({ value, onChange, disabled }) => {
+const Toggle: React.FC<Props> = memo(function Toggle({ value, onChange, disabled }) {
   /** Simple themed toggle control. */
   const t = useTheme();
+  const onToggle = useCallback(() => {
+    if (!disabled) onChange?.(!value);
+  }, [disabled, onChange, value]);
+
   return (
     <Pressable
       accessibilityRole="switch"
       accessibilityState={{ disabled, checked: value }}
-      onPress={() => !disabled && onChange?.(!value)}
+      accessibilityLabel="Toggle"
+      onPress={onToggle}
+      hitSlop={6}
       style={[
         styles.track,
         { backgroundColor: value ? t.colors.primary : '#e5e7eb', borderRadius: 9999 },
@@ -37,7 +43,7 @@ const Toggle: React.FC<Props> = ({ value, onChange, disabled }) => {
       />
     </Pressable>
   );
-};
+});
 
 const styles = StyleSheet.create({
   track: {

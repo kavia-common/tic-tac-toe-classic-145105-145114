@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 
@@ -9,26 +9,26 @@ type Props = {
 };
 
 // PUBLIC_INTERFACE
-const ScoreBar: React.FC<Props> = ({ x, o, draws }) => {
+const ScoreBar: React.FC<Props> = memo(function ScoreBar({ x, o, draws }) {
   /** Displays current score in a themed bar. */
   const t = useTheme();
   return (
     <View style={[styles.container, { backgroundColor: t.colors.surface, borderRadius: t.radius.lg }, t.shadow.sm]}>
-      <View style={styles.item}>
+      <View style={styles.item} accessibilityLabel={`Score X ${x}`}>
         <Text style={[styles.label, { color: t.colors.mutedText }]}>X</Text>
         <Text style={[styles.value, { color: t.colors.text }]}>{x}</Text>
       </View>
-      <View style={[styles.item, styles.mid]}>
+      <View style={[styles.item, styles.mid]} accessibilityLabel={`Draws ${draws}`}>
         <Text style={[styles.label, { color: t.colors.mutedText }]}>Draws</Text>
         <Text style={[styles.value, { color: t.colors.text }]}>{draws}</Text>
       </View>
-      <View style={styles.item}>
+      <View style={styles.item} accessibilityLabel={`Score O ${o}`}>
         <Text style={[styles.label, { color: t.colors.mutedText }]}>O</Text>
         <Text style={[styles.value, { color: t.colors.text }]}>{o}</Text>
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

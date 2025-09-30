@@ -18,22 +18,50 @@ export type ScoreState = {
   draws: number;
 };
 
+/**
+ * Persist settings to AsyncStorage. Errors are swallowed intentionally to avoid crashing UX.
+ */
 export async function saveSettings(settings: SettingsState): Promise<void> {
-  await AsyncStorage.setItem(KEYS.SETTINGS, JSON.stringify(settings));
+  try {
+    await AsyncStorage.setItem(KEYS.SETTINGS, JSON.stringify(settings));
+  } catch {
+    // no-op
+  }
 }
 
+/**
+ * Load settings from AsyncStorage, returning null if not present or invalid.
+ */
 export async function loadSettings(): Promise<SettingsState | null> {
-  const data = await AsyncStorage.getItem(KEYS.SETTINGS);
-  return data ? (JSON.parse(data) as SettingsState) : null;
+  try {
+    const data = await AsyncStorage.getItem(KEYS.SETTINGS);
+    return data ? (JSON.parse(data) as SettingsState) : null;
+  } catch {
+    return null;
+  }
 }
 
+/**
+ * Persist score to AsyncStorage. Errors are swallowed intentionally to avoid crashing UX.
+ */
 export async function saveScore(score: ScoreState): Promise<void> {
-  await AsyncStorage.setItem(KEYS.SCORE, JSON.stringify(score));
+  try {
+    await AsyncStorage.setItem(KEYS.SCORE, JSON.stringify(score));
+  } catch {
+    // no-op
+  }
 }
 
+/**
+ * Load score from AsyncStorage, returning null if not present or invalid.
+ */
 export async function loadScore(): Promise<ScoreState | null> {
-  const data = await AsyncStorage.getItem(KEYS.SCORE);
-  return data ? (JSON.parse(data) as ScoreState) : null;
+  try {
+    const data = await AsyncStorage.getItem(KEYS.SCORE);
+    return data ? (JSON.parse(data) as ScoreState) : null;
+  } catch {
+    return null;
+  }
 }
 
 export const defaultSettings: SettingsState = {

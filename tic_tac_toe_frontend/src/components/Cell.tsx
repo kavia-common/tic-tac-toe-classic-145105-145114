@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { Pressable, Text, StyleSheet, ViewStyle } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import { CellValue } from '../utils/game';
@@ -13,14 +13,30 @@ type Props = {
 };
 
 // PUBLIC_INTERFACE
-const Cell: React.FC<Props> = ({ value, onPress, highlight, disabled, style, index }) => {
+const Cell: React.FC<Props> = memo(function Cell({ value, onPress, highlight, disabled, style, index }) {
   /** One Tic Tac Toe cell with press interaction and highlight on winning line. */
   const t = useTheme();
+
+  const a11yLabel = useMemo(
+    () => `Cell ${index + 1} ${value ? value : 'empty'}`,
+    [index, value]
+  );
+
+  const valueColor = useMemo(
+    () =>
+      value === 'X'
+        ? t.colors.primary
+        : value === 'O'
+        ? t.colors.secondary
+        : t.colors.mutedText,
+    [t.colors.mutedText, t.colors.primary, t.colors.secondary, value]
+  );
+
   return (
     <Pressable
       accessible
       accessibilityRole="button"
-      accessibilityLabel={`Cell ${index + 1} ${value ? value : 'empty'}`}
+      accessibilityLabel={a11yLabel}
       onPress={disabled ? undefined : onPress}
       style={({ pressed }) => [
         styles.base,
@@ -35,17 +51,10 @@ const Cell: React.FC<Props> = ({ value, onPress, highlight, disabled, style, ind
         style,
       ]}
     >
-      <Text
-        style={[
-          styles.text,
-          { color: value === 'X' ? t.colors.primary : value === 'O' ? t.colors.secondary : t.colors.mutedText },
-        ]}
-      >
-        {value || ''}
-      </Text>
+      <Text style={[styles.text, { color: valueColor }]}>{value || ''}</Text>
     </Pressable>
   );
-};
+});
 
 const styles = StyleSheet.create({
   base: {

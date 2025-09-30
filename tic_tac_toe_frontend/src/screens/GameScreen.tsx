@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../theme/ThemeContext';
@@ -9,9 +9,7 @@ import ModalCard from '../components/ModalCard';
 import { useScore } from '../hooks/useScore';
 import { useSettings } from '../hooks/useSettings';
 import { useGame } from '../hooks/useGame';
-
-type RouteName = 'Home' | 'Game' | 'Settings';
-type NavLike = { navigate: (route: RouteName) => void; goBack?: () => void };
+import { NavLike } from '../theme/routerTypes';
 
 // PUBLIC_INTERFACE
 const GameScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
@@ -23,21 +21,33 @@ const GameScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
   const [showOver, setShowOver] = useState(false);
 
   const statusText = useMemo(() => {
-    if (end.status === 'win') {
-      return `${end.winner} wins!`;
-    } else if (end.status === 'draw') {
-      return `It's a draw`;
-    }
+    if (end.status === 'win') return `${end.winner} wins!`;
+    if (end.status === 'draw') return `It's a draw`;
     return `${turn}'s turn ${settings.vsAI ? '(vs AI)' : '(2P)'}`;
-  }, [end, turn, settings.vsAI]);
+  }, [end.status, end.winner, settings.vsAI, turn]);
 
   React.useEffect(() => {
     if (end.status !== 'ongoing') setShowOver(true);
   }, [end.status]);
 
+  const boardDisabled = useMemo(() => {
+    if (end.status !== 'ongoing') return true;
+    if (!settings.vsAI) return false;
+    const playerIsX = settings.playerStarts;
+    const aiTurn = (playerIsX && turn === 'O') || (!playerIsX && turn === 'X');
+    return aiTurn;
+  }, [end.status, settings.playerStarts, settings.vsAI, turn]);
+
+  const onRestart = useCallback(() => reset(), [reset]);
+
   if (!scoreReady || !settingsReady) {
     return (
-      <View style={[styles.container, { backgroundColor: t.colors.background, alignItems: 'center', justifyContent: 'center' }]}>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: t.colors.background, alignItems: 'center', justifyContent: 'center' },
+        ]}
+      >
         <Text style={{ color: t.colors.mutedText }}>Loading...</Text>
       </View>
     );
@@ -45,7 +55,12 @@ const GameScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
 
   return (
     <View style={[styles.container, { backgroundColor: t.colors.background }]}>
-      <LinearGradient colors={t.gradients.header} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[styles.header, t.shadow.md]}>
+      <LinearGradient
+        colors={t.gradients.header}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[styles.header, t.shadow.md]}
+      >
         <Text style={[styles.title, { color: t.colors.text }]}>Play</Text>
         <ScoreBar x={score.x} o={score.o} draws={score.draws} />
       </LinearGradient>
@@ -55,16 +70,11 @@ const GameScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
       </View>
 
       <View style={styles.boardWrap}>
-        <Board
-          board={board}
-          onCellPress={idx => move(idx)}
-          disabled={end.status !== 'ongoing' || (settings.vsAI && ((settings.playerStarts && turn === 'O') || (!settings.playerStarts && turn === 'X')))}
-          winningLine={end.line}
-        />
+        <Board board={board} onCellPress={move} disabled={boardDisabled} winningLine={end.line} />
       </View>
 
       <View style={styles.controls}>
-        <Button title="Restart" variant="ghost" onPress={() => reset()} />
+        <Button title="Restart" variant="ghost" onPress={onRestart} />
         <Button title="Settings" variant="secondary" onPress={() => navigation.navigate('Settings')} />
         <Button title="Home" variant="primary" onPress={() => navigation.navigate('Home')} />
       </View>

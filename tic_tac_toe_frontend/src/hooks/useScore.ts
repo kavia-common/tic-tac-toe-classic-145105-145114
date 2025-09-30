@@ -9,18 +9,18 @@ export function useScore() {
 
   useEffect(() => {
     (async () => {
-      const stored = await loadScore();
-      if (stored) setScore(stored);
-      setReady(true);
+      try {
+        const stored = await loadScore();
+        if (stored) setScore(stored);
+      } finally {
+        setReady(true);
+      }
     })();
   }, []);
 
   const addWin = useCallback((winner: 'X' | 'O') => {
     setScore(prev => {
-      const next: ScoreState =
-        winner === 'X'
-          ? { ...prev, x: prev.x + 1 }
-          : { ...prev, o: prev.o + 1 };
+      const next: ScoreState = winner === 'X' ? { ...prev, x: prev.x + 1 } : { ...prev, o: prev.o + 1 };
       saveScore(next).catch(() => {});
       return next;
     });

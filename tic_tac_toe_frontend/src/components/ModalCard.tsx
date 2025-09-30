@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Modal, View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import Button from './Button';
@@ -13,12 +13,20 @@ type Props = {
 };
 
 // PUBLIC_INTERFACE
-const ModalCard: React.FC<Props> = ({ visible, title, message, onClose, confirmText, onConfirm, children }) => {
+const ModalCard: React.FC<Props> = memo(function ModalCard({
+  visible,
+  title,
+  message,
+  onClose,
+  confirmText,
+  onConfirm,
+  children,
+}) {
   /** Themed modal card with title, message, and optional confirm action. */
   const t = useTheme();
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
-      <View style={styles.backdrop} accessibilityRole="dialog">
+      <View style={styles.backdrop} accessibilityRole="dialog" accessibilityLabel={title}>
         <View style={[styles.card, { backgroundColor: t.colors.surface, borderRadius: t.radius.xl }, t.shadow.lg]}>
           <Text style={[styles.title, { color: t.colors.text }]}>{title}</Text>
           {message ? <Text style={[styles.message, { color: t.colors.mutedText }]}>{message}</Text> : null}
@@ -31,7 +39,7 @@ const ModalCard: React.FC<Props> = ({ visible, title, message, onClose, confirmT
       </View>
     </Modal>
   );
-};
+});
 
 const styles = StyleSheet.create({
   backdrop: {

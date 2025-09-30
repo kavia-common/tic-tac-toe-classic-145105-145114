@@ -3,9 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Button from '../components/Button';
 import { useTheme } from '../theme/ThemeContext';
-
-type RouteName = 'Home' | 'Game' | 'Settings';
-type NavLike = { navigate: (route: RouteName) => void };
+import { NavLike } from '../theme/routerTypes';
 
 // PUBLIC_INTERFACE
 const HomeScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {

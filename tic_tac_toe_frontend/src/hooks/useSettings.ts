@@ -9,9 +9,12 @@ export function useSettings() {
 
   useEffect(() => {
     (async () => {
-      const stored = await loadSettings();
-      if (stored) setSettings(stored);
-      setReady(true);
+      try {
+        const stored = await loadSettings();
+        if (stored) setSettings(stored);
+      } finally {
+        setReady(true);
+      }
     })();
   }, []);
 
