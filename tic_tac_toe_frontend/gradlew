@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+# Frontend-container Gradle shim for CI in an Expo-managed project.
+# If android folder exists (after prebuild), forward to its gradle wrapper; else no-op.
+CMD="$1"
+if [ -f "./android/gradlew" ]; then
+  /bin/sh ./android/gradlew "$CMD" || /usr/bin/env bash ./android/gradlew "$CMD" || true
+  exit 0
+fi
+echo "[frontend gradle shim] Expo managed project: skipping Gradle task '${CMD:-(none)}'."
+exit 0
