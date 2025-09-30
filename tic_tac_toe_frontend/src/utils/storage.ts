@@ -5,7 +5,7 @@ const KEYS = {
   SCORE: '@ttt:score',
 };
 
-export type ThemeKey = 'ocean' | 'royalDark';
+export type ThemeKey = 'ocean' | 'royalDark' | 'purpleDream';
 
 export type SettingsState = {
   vsAI: boolean;
@@ -57,7 +57,7 @@ export async function saveScore(score: ScoreState): Promise<void> {
 /**
  * Load score from AsyncStorage, returning null if not present or invalid.
  */
-export async function loadScore(): Promise<ScoreState | null> {
+export async function loadScore(): ScoreState | null | Promise<ScoreState | null> {
   try {
     const data = await AsyncStorage.getItem(KEYS.SCORE);
     return data ? (JSON.parse(data) as ScoreState) : null;

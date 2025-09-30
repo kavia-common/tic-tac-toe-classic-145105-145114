@@ -7,6 +7,7 @@ import Button from '../components/Button';
 import { useSettings } from '../hooks/useSettings';
 import { NavLike } from '../theme/routerTypes';
 import { Animate } from '../utils/animations';
+import { ThemeKey as ThemeKeyFromTheme } from '../theme/theme';
 
 // PUBLIC_INTERFACE
 const SettingsScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
@@ -33,7 +34,7 @@ const SettingsScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
     );
   }
 
-  const onSelectTheme = (key: 'ocean' | 'royalDark') => {
+  const onSelectTheme = (key: ThemeKeyFromTheme) => {
     setSettings({ theme: key });
     changeTheme(key);
   };
@@ -103,6 +104,12 @@ const SettingsScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
               selected={settings.theme === 'royalDark'}
               onPress={() => onSelectTheme('royalDark')}
               a11yLabel="Select Royal Dark theme"
+            />
+            <Segment
+              label="Purple Dream"
+              selected={settings.theme === 'purpleDream'}
+              onPress={() => onSelectTheme('purpleDream')}
+              a11yLabel="Select Purple Dream theme"
             />
           </View>
         </View>

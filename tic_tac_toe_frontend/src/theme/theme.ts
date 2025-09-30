@@ -4,7 +4,7 @@ export type AppTheme = {
   /** Theme display name. */
   name: string;
   /** Unique key for persistence and selection. */
-  key: 'ocean' | 'royalDark';
+  key: 'ocean' | 'royalDark' | 'purpleDream';
   /** Color palette. */
   colors: typeof Colors;
   /** Linear gradients. */
@@ -159,12 +159,84 @@ export const RoyalDarkTheme: AppTheme = {
 };
 
 /**
+ * Purple Dream theme: soothing lavender and deep purple accents,
+ * soft light surfaces with subtle violet gradients.
+ */
+const PurpleColors = {
+  primary: '#7C3AED', // Purple-600
+  secondary: '#C084FC', // Purple-300 (lavender accent)
+  background: '#FAF7FF', // very light lavender
+  surface: '#FFFFFF',
+  text: '#1F1147', // deep purple for contrast
+  mutedText: '#6B5EA8', // muted lavender
+  border: '#E9D5FF', // light purple border
+  error: '#EF4444',
+  success: '#10B981',
+  shadow: 'rgba(124, 58, 237, 0.18)',
+} as const;
+
+const PurpleGradients = {
+  header: ['#F5F3FF', '#EDE9FE'], // from light to slightly deeper lavender
+  surface: ['#FFFFFF', '#F7F2FF'],
+  primarySoft: ['#E9D5FF', '#FFFFFF'],
+} as const;
+
+export const PurpleDreamTheme: AppTheme = {
+  name: 'Purple Dream',
+  key: 'purpleDream',
+  colors: PurpleColors as unknown as typeof Colors,
+  gradients: PurpleGradients as unknown as typeof Gradients,
+  radius: {
+    sm: 8,
+    md: 12,
+    lg: 16,
+    xl: 24,
+  },
+  spacing: (factor = 1) => 8 * factor,
+  shadow: {
+    sm: {
+      shadowColor: PurpleColors.shadow,
+      shadowOpacity: 0.12,
+      shadowRadius: 6,
+      shadowOffset: { width: 0, height: 2 },
+      elevation: 2,
+    },
+    md: {
+      shadowColor: PurpleColors.shadow,
+      shadowOpacity: 0.18,
+      shadowRadius: 12,
+      shadowOffset: { width: 0, height: 6 },
+      elevation: 4,
+    },
+    lg: {
+      shadowColor: PurpleColors.shadow,
+      shadowOpacity: 0.24,
+      shadowRadius: 16,
+      shadowOffset: { width: 0, height: 8 },
+      elevation: 6,
+    },
+  },
+  typography: {
+    title: { fontSize: 22, fontWeight: '900', letterSpacing: 0.3 },
+    subtitle: { fontSize: 14, fontWeight: '700', letterSpacing: 0.2 },
+    body: { fontSize: 14, fontWeight: '500' },
+    button: { fontSize: 16, fontWeight: '800', letterSpacing: 0.3 },
+  },
+  motion: {
+    fast: 120,
+    normal: 220,
+    slow: 380,
+  },
+};
+
+/**
  * PUBLIC_INTERFACE
  * Registry of available themes keyed by persistence key.
  */
 export const Themes = {
   ocean: OceanProfessionalTheme,
   royalDark: RoyalDarkTheme,
+  purpleDream: PurpleDreamTheme,
 } as const;
 
 export type ThemeKey = keyof typeof Themes;
