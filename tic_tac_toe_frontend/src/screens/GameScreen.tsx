@@ -69,7 +69,10 @@ const GameScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
         <Text style={[styles.statusText, { color: t.colors.mutedText }]}>{statusText}</Text>
       </View>
 
-      <View style={styles.boardWrap}>
+      <View
+        style={styles.boardWrap}
+        accessibilityHint="Tap an empty cell to place your mark."
+      >
         <Board board={board} onCellPress={move} disabled={boardDisabled} winningLine={end.line} />
       </View>
 

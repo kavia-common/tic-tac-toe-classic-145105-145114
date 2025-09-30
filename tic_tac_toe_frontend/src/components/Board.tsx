@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import Cell from './Cell';
@@ -11,19 +11,54 @@ type Props = {
   disabled?: boolean;
 };
 
+/**
+ * Compute accessibility label for the board from a linear board state.
+ * Example: "Row 1: X empty O; Row 2: ...".
+ */
+function useBoardA11yLabel(board: BoardType) {
+  return useMemo(() => {
+    const toWord = (v: string | null) => (v ? v : 'empty');
+    const rows = [
+      `Row 1: ${toWord(board[0])} ${toWord(board[1])} ${toWord(board[2])}`,
+      `Row 2: ${toWord(board[3])} ${toWord(board[4])} ${toWord(board[5])}`,
+      `Row 3: ${toWord(board[6])} ${toWord(board[7])} ${toWord(board[8])}`,
+    ];
+    return rows.join('; ');
+  }, [board]);
+}
+
 // PUBLIC_INTERFACE
 const Board: React.FC<Props> = memo(function Board({ board, onCellPress, winningLine, disabled }) {
-  /** 3x3 game board with winning line highlight and press handling. */
+  /** 3x3 game board with responsive square layout, winning line highlight and press handling. */
   const t = useTheme();
+  const a11yLabel = useBoardA11yLabel(board);
 
   const handlePress = useCallback(
     (idx: number) => () => onCellPress(idx),
     [onCellPress]
   );
 
+  const gridStyle = useMemo(
+    () => [
+      styles.grid,
+      {
+        // maintain a perfect square by using aspectRatio and ensuring width stretches
+        borderRadius: t.radius.lg,
+        backgroundColor: t.colors.surface,
+      },
+      t.shadow.md,
+    ],
+    [t.colors.surface, t.radius.lg, t.shadow.md]
+  );
+
   return (
-    <View style={[styles.wrap, { backgroundColor: t.colors.surface, borderRadius: t.radius.lg }, t.shadow.md]}>
-      <View style={styles.grid}>
+    <View
+      accessible
+      accessibilityRole="grid"
+      accessibilityLabel={`Tic Tac Toe board. ${a11yLabel}`}
+      style={styles.wrap}
+    >
+      <View style={gridStyle}>
         {board.map((v, i) => (
           <Cell
             key={i}
@@ -41,11 +76,15 @@ const Board: React.FC<Props> = memo(function Board({ board, onCellPress, winning
 
 const styles = StyleSheet.create({
   wrap: {
-    padding: 10,
+    paddingHorizontal: 6,
+    // the container allows the grid to size fluidly
   },
   grid: {
+    width: '100%',
+    aspectRatio: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
+    padding: 8,
   },
 });
 

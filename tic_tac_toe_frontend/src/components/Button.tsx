@@ -36,11 +36,12 @@ const Button: React.FC<Props> = memo(function Button({
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel || title}
+      accessibilityState={{ disabled }}
       hitSlop={8}
       style={({ pressed }) => [
         ...base,
         variantStyle,
-        pressed ? { opacity: 0.9, transform: [{ scale: 0.98 }] } : null,
+        pressed ? { opacity: 0.92, transform: [{ scale: 0.985 }] } : null,
         disabled ? { opacity: 0.6 } : null,
         style,
       ]}
