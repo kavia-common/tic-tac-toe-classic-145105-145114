@@ -1,0 +1,8 @@
+//
+// Frontend-local Gradle settings shim for Expo-managed workflow.
+// Ensures Gradle treats the generated android project inside this folder as the build root,
+// avoiding interference from the repository-root settings.gradle.
+//
+rootProject.name = "tic-tac-toe-frontend"
+include(":android")
+project(":android").projectDir = new File(rootDir, "android")

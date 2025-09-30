@@ -4,10 +4,12 @@
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run lint && npm run typecheck",
     "prebuild:android": "expo prebuild --platform android",
     "build": "echo \"No-op: Use 'npm run build:android:ci' for CI or EAS builds as documented in kavia-docs/CI_Configuration_Guide.md\" && exit 0",
     "build:android:local": "npm run prebuild:android && cd android && ./gradlew assembleDebug",
@@ -15,11 +17,16 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
+    "@react-navigation/native": "^7.0.14",
+    "@react-navigation/native-stack": "^7.1.1",
+    "@react-native-async-storage/async-storage": "~2.0.0",
     "expo": "~53.0.20",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
+    "react-native-safe-area-context": "4.14.0",
+    "react-native-screens": "~4.1.0",
     "react-native-web": "^0.20.0"
   },
   "devDependencies": {

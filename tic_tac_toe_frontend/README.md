@@ -8,12 +8,21 @@
 
 ### Install
 - npm ci
+- expo install @react-navigation/native @react-navigation/native-stack react-native-screens react-native-safe-area-context
+- expo install @react-native-async-storage/async-storage
 
 ### Run (Dev)
 - Start: npm start
 - Android: npm run android
 - iOS: npm run ios
 - Web: npm run web
+
+## Features (MVP)
+- Home, Game, Settings screens
+- PvP and PvAI (Easy/Normal)
+- Game Over modal flow
+- Ocean Professional theme (colors, shadows, rounded corners)
+- Settings and Stats with AsyncStorage persistence
 
 ## Build Notes (Android)
 

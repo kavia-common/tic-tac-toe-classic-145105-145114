@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Frontend-level gradle shim for analyzers calling ./gradlew within tic_tac_toe_frontend.
+# This Expo-managed app generates the native android project via Expo prebuild.
+set -euo pipefail
+
+FRONTEND_ANDROID_WRAPPER="android/gradlew"
+
+if [ -x "${FRONTEND_ANDROID_WRAPPER}" ]; then
+  exec "${FRONTEND_ANDROID_WRAPPER}" "$@"
+fi
+
+# Try our shim that can auto-prebuild
+if [ -x "android/gradlew.sh" ]; then
+  exec "android/gradlew.sh" "$@"
+fi
+
+echo "[frontend shim] Gradle wrapper not found. Run 'npm run build:android:ci' to generate android/ via Expo prebuild, then Gradle."
+echo "[frontend shim] Alternatively, run: bash ../ci_build_android.sh from the workspace root."
+exit 127

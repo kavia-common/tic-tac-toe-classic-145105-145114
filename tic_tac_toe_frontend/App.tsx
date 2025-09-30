@@ -1,21 +1,20 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import AppNavigator from './src/navigation';
+import { SettingsProvider } from './src/state/SettingsContext';
+import { StatsProvider } from './src/state/StatsContext';
 
+/**
+ * Root App component
+ * Wires up providers and the navigation container.
+ */
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SettingsProvider>
+      <StatsProvider>
+        <StatusBar style="dark" />
+        <AppNavigator />
+      </StatsProvider>
+    </SettingsProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
