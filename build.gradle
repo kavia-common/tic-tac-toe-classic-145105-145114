@@ -1,0 +1,15 @@
+//
+// Root-level Gradle build shim for analyzers.
+//
+// This project uses an Expo-managed workflow; native Android project is generated at:
+// tic-tac-toe-classic-145105-145114/tic_tac_toe_frontend/android
+//
+// If this file is executed by a tool, it will emit a clear error.
+//
+task helpShim {
+    doLast {
+        println("This repository uses Expo-managed workflow. Run 'cd tic_tac_toe_frontend && npm run build:android:ci' to generate and build the Android project.")
+        throw new GradleException("No native Android project at repository root. Use Expo prebuild.")
+    }
+}
+defaultTasks 'helpShim'

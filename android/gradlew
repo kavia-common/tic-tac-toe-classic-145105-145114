@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Root-level android gradle shim to support analyzers that call ./android/gradlew
+set -euo pipefail
+
+FRONTEND_WRAPPER="../tic_tac_toe_frontend/android/gradlew"
+
+if [ -x "${FRONTEND_WRAPPER}" ]; then
+  exec "${FRONTEND_WRAPPER}" "$@"
+fi
+
+if [ -f "${FRONTEND_WRAPPER}" ]; then
+  chmod +x "${FRONTEND_WRAPPER}"
+  exec "${FRONTEND_WRAPPER}" "$@"
+fi
+
+echo "Gradle wrapper not found. Generate native projects with 'npx expo prebuild --platform android' inside tic_tac_toe_frontend."
+echo "Alternatively, run: (cd tic_tac_toe_frontend && npm run build:android:ci)"
+exit 127

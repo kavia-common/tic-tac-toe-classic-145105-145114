@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Auto-prebuild Gradle wrapper for Expo-managed workflow
+# If the real native project does not exist, run Expo prebuild and then invoke the real gradle wrapper.
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+APP_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+REAL_WRAPPER="${SCRIPT_DIR}/../android/gradlew"
+
+# If this script is being executed from android/ already, adjust REAL_WRAPPER
+if [[ -f "${SCRIPT_DIR}/gradlew" && "${SCRIPT_DIR##*/}" == "android" ]]; then
+  REAL_WRAPPER="${SCRIPT_DIR}/gradlew"
+fi
+
+# Detect if we're inside a generated android project (real settings.gradle presence is a good signal)
+if [[ ! -f "${SCRIPT_DIR}/settings.gradle" && ! -f "${SCRIPT_DIR}/settings.gradle.kts" ]]; then
+  echo "Android project not found. Running 'npx expo prebuild --platform android' to generate native project..."
+  # Move to app directory (tic_tac_toe_frontend)
+  FRONTEND_DIR="${APP_DIR}"
+  if [[ -f "${FRONTEND_DIR}/package.json" ]]; then
+    (cd "${FRONTEND_DIR}" && npx expo prebuild --platform android)
+  else
+    echo "Could not locate package.json to run prebuild. Aborting."
+    exit 127
+  fi
+fi
+
+# After prebuild, the real gradlew should exist in this directory
+if [[ -f "${SCRIPT_DIR}/gradlew" ]]; then
+  exec "${SCRIPT_DIR}/gradlew" "$@"
+fi
+
+# Fallback if path expectations differ
+if [[ -f "${REAL_WRAPPER}" ]]; then
+  exec "${REAL_WRAPPER}" "$@"
+fi
+
+echo "Gradle wrapper still not found after prebuild. Ensure prebuild succeeded and android directory exists."
+exit 127

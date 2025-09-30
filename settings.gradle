@@ -1,0 +1,8 @@
+/*
+  Root-level Gradle settings shim for analyzers.
+  This repository uses Expo-managed workflow; the real Android project is generated under:
+  tic-tac-toe-classic-145105-145114/tic_tac_toe_frontend/android
+
+  See kavia-docs/CI_Configuration_Guide.md for build instructions.
+*/
+rootProject.name = "tic-tac-toe-classic-145105-145114-shim"

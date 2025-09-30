@@ -9,7 +9,9 @@
     "web": "expo start --web",
     "lint": "eslint .",
     "prebuild:android": "expo prebuild --platform android",
-    "build": "npm run prebuild:android && cd android && ./gradlew assembleDebug"
+    "build": "echo \"No-op: Use 'npm run build:android:ci' for CI or EAS builds as documented in kavia-docs/CI_Configuration_Guide.md\" && exit 0",
+    "build:android:local": "npm run prebuild:android && cd android && ./gradlew assembleDebug",
+    "build:android:ci": "expo prebuild --platform android && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
