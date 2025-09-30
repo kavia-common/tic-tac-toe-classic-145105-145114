@@ -22,6 +22,19 @@ export type AppTheme = {
     md: Record<string, unknown>;
     lg: Record<string, unknown>;
   };
+  /** Typography scale for consistent text styles. */
+  typography: {
+    title: { fontSize: number; fontWeight: '800' | '900'; letterSpacing?: number };
+    subtitle: { fontSize: number; fontWeight: '600' | '700'; letterSpacing?: number };
+    body: { fontSize: number; fontWeight: '400' | '500' | '600'; letterSpacing?: number };
+    button: { fontSize: number; fontWeight: '700' | '800'; letterSpacing?: number };
+  };
+  /** Motion tokens for durations/easings to keep animations coherent. */
+  motion: {
+    fast: number;
+    normal: number;
+    slow: number;
+  };
 };
 
 export const OceanProfessionalTheme: AppTheme = {
@@ -57,5 +70,16 @@ export const OceanProfessionalTheme: AppTheme = {
       shadowOffset: { width: 0, height: 8 },
       elevation: 6,
     },
+  },
+  typography: {
+    title: { fontSize: 22, fontWeight: '900', letterSpacing: 0.3 },
+    subtitle: { fontSize: 14, fontWeight: '700', letterSpacing: 0.2 },
+    body: { fontSize: 14, fontWeight: '500' },
+    button: { fontSize: 16, fontWeight: '800', letterSpacing: 0.3 },
+  },
+  motion: {
+    fast: 120,
+    normal: 220,
+    slow: 380,
   },
 };

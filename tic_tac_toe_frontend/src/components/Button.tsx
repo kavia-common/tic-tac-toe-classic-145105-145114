@@ -1,6 +1,7 @@
 import React, { memo, useMemo } from 'react';
-import { Pressable, Text, ViewStyle, StyleSheet } from 'react-native';
+import { Pressable, Text, ViewStyle, StyleSheet, Animated } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
+import { Animate } from '../utils/animations';
 
 type Props = {
   title: string;
@@ -20,9 +21,14 @@ const Button: React.FC<Props> = memo(function Button({
   disabled,
   accessibilityLabel,
 }) {
-  /** Themed button supporting primary, secondary, and ghost variants. */
+  /** Themed button supporting primary, secondary, and ghost variants with shared press animation. */
   const t = useTheme();
-  const base = useMemo(() => [styles.base, t.shadow.sm, { borderRadius: t.radius.lg }], [t.radius.lg, t.shadow.sm]);
+  const press = useMemo(() => Animate.pressScale(1, 0.985, t.motion.fast), [t.motion.fast]);
+
+  const base = useMemo(
+    () => [styles.base, t.shadow.sm, { borderRadius: t.radius.lg }],
+    [t.radius.lg, t.shadow.sm]
+  );
 
   const variantStyle: ViewStyle = useMemo(() => {
     if (variant === 'primary') return { backgroundColor: t.colors.primary };
@@ -35,19 +41,32 @@ const Button: React.FC<Props> = memo(function Button({
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityHint={`Activates ${title}`}
       accessibilityLabel={accessibilityLabel || title}
       accessibilityState={{ disabled }}
+      onPressIn={press.onPressIn}
+      onPressOut={press.onPressOut}
       hitSlop={8}
       style={({ pressed }) => [
         ...base,
         variantStyle,
-        pressed ? { opacity: 0.92, transform: [{ scale: 0.985 }] } : null,
+        pressed ? { opacity: 0.95 } : null,
         disabled ? { opacity: 0.6 } : null,
         style,
       ]}
-      onPress={disabled ? undefined : onPress}
+      onPress={
+        disabled
+          ? undefined
+          : () => {
+              // tactile feedback stub for future haptics
+              // Animate.hapticLight();
+              onPress?.();
+            }
+      }
     >
-      <Text style={[styles.text, { color: textColor }]}>{title}</Text>
+      <Animated.View style={press.style}>
+        <Text style={[styles.text, { color: textColor }]}>{title}</Text>
+      </Animated.View>
     </Pressable>
   );
 });
@@ -61,7 +80,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '800',
     letterSpacing: 0.3,
   },
 });

@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../theme/ThemeContext';
 import ScoreBar from '../components/ScoreBar';
@@ -10,6 +10,7 @@ import { useScore } from '../hooks/useScore';
 import { useSettings } from '../hooks/useSettings';
 import { useGame } from '../hooks/useGame';
 import { NavLike } from '../theme/routerTypes';
+import { Animate } from '../utils/animations';
 
 // PUBLIC_INTERFACE
 const GameScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
@@ -19,6 +20,11 @@ const GameScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
   const { settings, ready: settingsReady } = useSettings();
   const { board, turn, end, move, reset } = useGame();
   const [showOver, setShowOver] = useState(false);
+
+  const fade = React.useMemo(() => Animate.fadeIn(t.motion.normal, 20), [t.motion.normal]);
+  React.useEffect(() => {
+    fade.start();
+  }, [fade]);
 
   const statusText = useMemo(() => {
     if (end.status === 'win') return `${end.winner} wins!`;
@@ -54,25 +60,26 @@ const GameScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: t.colors.background }]}>
+    <Animated.View style={[styles.container, { backgroundColor: t.colors.background }, fade.style]}>
       <LinearGradient
         colors={t.gradients.header}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={[styles.header, t.shadow.md]}
       >
-        <Text style={[styles.title, { color: t.colors.text }]}>Play</Text>
+        <Text style={[styles.title, { color: t.colors.text }]} accessibilityRole="header">
+          Play
+        </Text>
         <ScoreBar x={score.x} o={score.o} draws={score.draws} />
       </LinearGradient>
 
       <View style={styles.status}>
-        <Text style={[styles.statusText, { color: t.colors.mutedText }]}>{statusText}</Text>
+        <Text style={[styles.statusText, { color: t.colors.mutedText }]} accessibilityLiveRegion="polite">
+          {statusText}
+        </Text>
       </View>
 
-      <View
-        style={styles.boardWrap}
-        accessibilityHint="Tap an empty cell to place your mark."
-      >
+      <View style={styles.boardWrap} accessibilityHint="Tap an empty cell to place your mark.">
         <Board board={board} onCellPress={move} disabled={boardDisabled} winningLine={end.line} />
       </View>
 
@@ -97,7 +104,7 @@ const GameScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
       <View style={styles.footer}>
         <Button title="Reset Score" variant="ghost" onPress={resetScore} />
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

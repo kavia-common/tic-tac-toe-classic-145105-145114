@@ -1,17 +1,23 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../theme/ThemeContext';
 import Toggle from '../components/Toggle';
 import Button from '../components/Button';
 import { useSettings } from '../hooks/useSettings';
 import { NavLike } from '../theme/routerTypes';
+import { Animate } from '../utils/animations';
 
 // PUBLIC_INTERFACE
 const SettingsScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
   /** Settings screen to configure opponent type and AI difficulty. */
   const t = useTheme();
   const { settings, setSettings, ready } = useSettings();
+
+  const fade = React.useMemo(() => Animate.fadeIn(t.motion.normal, 0), [t.motion.normal]);
+  React.useEffect(() => {
+    fade.start();
+  }, [fade]);
 
   if (!ready) {
     return (
@@ -27,14 +33,16 @@ const SettingsScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: t.colors.background }]}>
+    <Animated.View style={[styles.container, { backgroundColor: t.colors.background }, fade.style]}>
       <LinearGradient
         colors={t.gradients.header}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={[styles.header, t.shadow.md]}
       >
-        <Text style={[styles.title, { color: t.colors.text }]}>Settings</Text>
+        <Text style={[styles.title, { color: t.colors.text }]} accessibilityRole="header">
+          Settings
+        </Text>
       </LinearGradient>
 
       <View style={[styles.card, { backgroundColor: t.colors.surface, borderRadius: t.radius.lg }, t.shadow.md]}>
@@ -73,7 +81,7 @@ const SettingsScreen: React.FC<{ navigation: NavLike }> = ({ navigation }) => {
       <View style={styles.footer}>
         <Button title="Back" variant="secondary" onPress={() => navigation.goBack?.()} />
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

@@ -24,7 +24,7 @@ function useBoardA11yLabel(board: BoardType) {
       `Row 3: ${toWord(board[6])} ${toWord(board[7])} ${toWord(board[8])}`,
     ];
     return rows.join('; ');
-  }, [board]);
+  }, [board[0], board[1], board[2], board[3], board[4], board[5], board[6], board[7], board[8]]);
 }
 
 // PUBLIC_INTERFACE
@@ -42,7 +42,6 @@ const Board: React.FC<Props> = memo(function Board({ board, onCellPress, winning
     () => [
       styles.grid,
       {
-        // maintain a perfect square by using aspectRatio and ensuring width stretches
         borderRadius: t.radius.lg,
         backgroundColor: t.colors.surface,
       },
@@ -56,6 +55,7 @@ const Board: React.FC<Props> = memo(function Board({ board, onCellPress, winning
       accessible
       accessibilityRole="grid"
       accessibilityLabel={`Tic Tac Toe board. ${a11yLabel}`}
+      accessibilityHint="3 by 3 grid. Navigate cells to place your mark."
       style={styles.wrap}
     >
       <View style={gridStyle}>
@@ -77,7 +77,6 @@ const Board: React.FC<Props> = memo(function Board({ board, onCellPress, winning
 const styles = StyleSheet.create({
   wrap: {
     paddingHorizontal: 6,
-    // the container allows the grid to size fluidly
   },
   grid: {
     width: '100%',

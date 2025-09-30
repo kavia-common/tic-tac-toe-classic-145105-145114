@@ -11,6 +11,7 @@ import { NavLike } from './src/theme/routerTypes';
  * RouterOutlet decides which screen to render based on the internal router state.
  * It also constructs a stable NavLike object for each target, avoiding per-render
  * allocations where possible.
+ * Future: if deep linking or more routes are added, keep this switch pure and memoized.
  */
 const RouterOutlet = memo(function RouterOutlet() {
   const { route, navigate, goBack } = useRouter();
